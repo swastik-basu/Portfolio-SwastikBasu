@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swastik Basu — CS Student & Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0d0d0b;
+            --bg2: #141410;
+            --bg3: #1a1a15;
+            --text: #e8e4d9;
+            --muted: #7a7668;
+            --accent: #c8b97a;
+            --accent2: #8fb89a;
+            --border: rgba(200, 185, 122, 0.15);
+            --font-serif: 'DM Serif Display', serif;
+            --font-sans: 'Instrument Sans', sans-serif;
+            --font-mono: 'DM Mono', monospace;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 16px;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* CURSOR */
+        .cursor {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-ring {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(200, 185, 122, 0.4);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.12s ease;
+        }
+
+        /* NOISE OVERLAY */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* NAVIGATION */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(13, 13, 11, 0.95) 0%, transparent 100%);
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-logo {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            color: var(--accent);
+            letter-spacing: 0.02em;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+            font-family: var(--font-mono);
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        /* HAMBURGER */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 1.5px;
+            background: var(--muted);
+            transition: all 0.3s;
+        }
+
+        .hamburger.open span:nth-child(1) {
+            transform: translateY(6.5px) rotate(45deg);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: translateY(-6.5px) rotate(-45deg);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 13, 11, 0.97);
+            z-index: 99;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            color: var(--text);
+            text-decoration: none;
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            transition: color 0.2s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--accent);
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 3rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-serif);
+            font-size: clamp(8rem, 20vw, 22rem);
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(200, 185, 122, 0.06);
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.3s forwards;
+        }
+
+        .hero-name {
+            font-family: var(--font-serif);
+            font-size: clamp(3rem, 9vw, 8rem);
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.5s forwards;
+        }
+
+        .hero-name em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: var(--muted);
+            max-width: 560px;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.7s forwards;
+            line-height: 1.8;
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2rem;
+            right: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            writing-mode: vertical-rl;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 1s forwards;
+        }
+
+        .hero-scroll::after {
+            content: '';
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            display: block;
+            margin-top: 8px;
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 7rem 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        /* ABOUT */
+        .about {
+            border-top: 1px solid var(--border);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: start;
+        }
+
+        .about-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 2rem;
+        }
+
+        .about-title em {
+            font-style: italic;
+            color: var(--accent2);
+        }
+
+        .about-body {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.85;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2.5rem;
+            padding-top: 2.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-num {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .skills-block {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .skill-item {
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--bg2);
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .skill-item:hover {
+            border-color: rgba(200, 185, 122, 0.35);
+            background: var(--bg3);
+        }
+
+        .skill-name {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-desc {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .skill-bar {
+            margin-top: 1rem;
+            height: 2px;
+            background: rgba(200, 185, 122, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .skill-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--accent2));
+            border-radius: 2px;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 1s ease;
+        }
+
+        /* PROJECTS */
+        .projects {
+            border-top: 1px solid var(--border);
+        }
+
+        .projects-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 4rem;
+        }
+
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .project-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--border);
+            cursor: pointer;
+            transition: padding-left 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .project-item:last-child {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .project-item:hover {
+            padding-left: 1.5rem;
+        }
+
+        .project-num {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .project-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: var(--text);
+            letter-spacing: -0.01em;
+            transition: color 0.2s;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-item:hover .project-title {
+            color: var(--accent);
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent2);
+            background: rgba(143, 184, 154, 0.08);
+            border: 1px solid rgba(143, 184, 154, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 2px;
+        }
+
+        .project-arrow {
+            font-size: 1.5rem;
+            color: var(--muted);
+            transition: transform 0.3s ease, color 0.2s;
+        }
+
+        .project-item:hover .project-arrow {
+            transform: translate(5px, -5px);
+            color: var(--accent);
+        }
+
+        /* EXPERIENCE */
+        .experience {
+            border-top: 1px solid var(--border);
+        }
+
+        .exp-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 5rem;
+        }
+
+        .exp-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        .exp-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .exp-item {
+            padding: 2rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .exp-item:last-child {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .exp-org {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .exp-role {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--text);
+            letter-spacing: -0.01em;
+            margin-bottom: 0.5rem;
+        }
+
+        .exp-year {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .exp-desc {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.75;
+            max-width: 480px;
+        }
+
+        /* CONTACT */
+        .contact {
+            border-top: 1px solid var(--border);
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+        }
+
+        .contact-eyebrow {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 2rem;
+        }
+
+        .contact-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 7vw, 6rem);
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+            color: var(--text);
+            margin-bottom: 2.5rem;
+            max-width: 800px;
+        }
+
+        .contact-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .contact-email {
+            font-family: var(--font-mono);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(200, 185, 122, 0.3);
+            padding-bottom: 2px;
+            transition: border-color 0.2s, color 0.2s;
+            margin-bottom: 3rem;
+            display: inline-block;
+        }
+
+        .contact-email:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .social-link:hover {
+            color: var(--accent);
+        }
+
+        .social-link::before {
+            content: '↗';
+            font-size: 0.8em;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 2rem 3rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-copy {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 0.05em;
+        }
+
+        .footer-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* SCROLL REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1.2rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            section {
+                padding: 5rem 1.5rem;
+            }
+
+            .hero {
+                padding: 0 1.5rem 4rem;
+            }
+
+            .hero-scroll {
+                display: none;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .about-stats {
+                gap: 2rem;
+            }
+
+            .exp-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .exp-title {
+                font-size: 2rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .cursor,
+            .cursor-ring {
+                display: none;
+            }
+
+            .hero-bg-text {
+                font-size: clamp(5rem, 25vw, 12rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .project-item {
+                grid-template-columns: 1fr 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#about" onclick="closeMobile()">About</a>
+        <a href="#projects" onclick="closeMobile()">Projects</a>
+        <a href="#experience" onclick="closeMobile()">Experience</a>
+        <a href="#contact" onclick="closeMobile()">Contact</a>
+    </div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="#" class="nav-logo">SB</a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg-text" aria-hidden="true">Swastik</div>
+        <div class="hero-label">Computer Science Student</div>
+        <h1 class="hero-name">Swastik<br><em>Basu.</em></h1>
+        <p class="hero-sub">Building thoughtful software — from Java backends to VS Code extensions. Pursuing CS at
+            Ramakrishna Mission Vivekananda Centenary College, Kolkata.</p>
+        <div class="hero-scroll">Scroll</div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+        <div class="section-label">About Me</div>
+        <div class="about-grid">
+            <div>
+                <h2 class="about-title reveal">I write code that <em>actually works.</em></h2>
+                <p class="about-body reveal">I'm a Computer Science student at Ramakrishna Mission Vivekananda Centenary
+                    College, Kolkata — passionate about building clean, purposeful software that solves real problems.
+                </p>
+                <p class="about-body reveal">My primary language is Java, and I've dug deep into its ecosystem of
+                    frameworks and tools. When I'm not in the backend, I'm exploring developer tooling — like building
+                    my VS Code extension, Visual Pointer.</p>
+                <div class="about-stats reveal">
+                    <div>
+                        <div class="stat-num">Java</div>
+                        <div class="stat-label">Primary Language</div>
+                    </div>
+                    <div>
+                        <div class="stat-num">1+</div>
+                        <div class="stat-label">Published Extension</div>
+                    </div>
+                    <div>
+                        <div class="stat-num">WB</div>
+                        <div class="stat-label">Based in Kolkata</div>
+                    </div>
+                </div>
+            </div>
+            <div class="skills-block">
+                <div class="skill-item reveal">
+                    <div class="skill-name">Java & Frameworks</div>
+                    <div class="skill-desc">Core Java, OOP fundamentals, and framework experience. Building robust,
+                        structured backend logic with clean architecture principles.</div>
+                    <div class="skill-bar">
+                        <div class="skill-bar-fill" data-width="85"></div>
+                    </div>
+                </div>
+                <div class="skill-item reveal">
+                    <div class="skill-name">VS Code Extension Dev</div>
+                    <div class="skill-desc">Built and published "Visual Pointer" — a VS Code extension that enhances the
+                        editing experience for developers.</div>
+                    <div class="skill-bar">
+                        <div class="skill-bar-fill" data-width="70"></div>
+                    </div>
+                </div>
+                <div class="skill-item reveal">
+                    <div class="skill-name">Problem Solving</div>
+                    <div class="skill-desc">Analytical thinking, data structures, algorithms — the foundation of every
+                        good engineer.</div>
+                    <div class="skill-bar">
+                        <div class="skill-bar-fill" data-width="78"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="projects" id="projects">
+        <div class="section-label">Selected Work</div>
+        <h2 class="projects-title reveal">What I've Built</h2>
+        <div class="project-list">
+
+            <a class="project-item reveal"
+                href="https://marketplace.visualstudio.com/items?itemName=SwastikBasu626.visual-pointer" target="_blank"
+                rel="noopener">
+                <div>
+                    <div class="project-num">01</div>
+                    <div class="project-title">Visual Pointer</div>
+                    <div class="project-tags">
+                        <span class="tag">VS Code Extension</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">Developer Tool</span>
+                    </div>
+                </div>
+                <div class="project-arrow">↗</div>
+            </a>
+
+            <div class="project-item reveal" style="cursor: default;">
+                <div>
+                    <div class="project-num">02</div>
+                    <div class="project-title">Java Projects</div>
+                    <div class="project-tags">
+                        <span class="tag">Java</span>
+                        <span class="tag">OOP</span>
+                        <span class="tag">Backend</span>
+                    </div>
+                </div>
+                <div class="project-arrow" style="opacity:0.3">—</div>
+            </div>
+
+            <div class="project-item reveal" style="cursor: default;">
+                <div>
+                    <div class="project-num">03</div>
+                    <div class="project-title">More Coming Soon</div>
+                    <div class="project-tags">
+                        <span class="tag">In Progress</span>
+                        <span class="tag">2025</span>
+                    </div>
+                </div>
+                <div class="project-arrow" style="opacity:0.3">—</div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="experience" id="experience">
+        <div class="section-label">Background</div>
+        <div class="exp-grid">
+            <div>
+                <h2 class="exp-title reveal">Experience &amp;<br>Education</h2>
+            </div>
+            <div class="exp-list">
+
+                <div class="exp-item reveal">
+                    <div class="exp-org">Ramakrishna Mission Vivekananda Centenary College</div>
+                    <div class="exp-role">B.Sc. Computer Science</div>
+                    <div class="exp-year">Pursuing · Kolkata, West Bengal</div>
+                    <div class="exp-desc">Studying core CS fundamentals — data structures, algorithms, software
+                        engineering, and systems — at one of West Bengal's most prestigious institutions.</div>
+                </div>
+
+                <div class="exp-item reveal">
+                    <div class="exp-org">VS Code Marketplace</div>
+                    <div class="exp-role">Extension Author — Visual Pointer</div>
+                    <div class="exp-year">Published · Independent Project</div>
+                    <div class="exp-desc">Designed, developed, and published Visual Pointer — a VS Code extension to
+                        enhance the developer experience. End-to-end ownership from concept to marketplace release.
+                    </div>
+                </div>
+
+                <div class="exp-item reveal">
+                    <div class="exp-org">Self-Directed Learning</div>
+                    <div class="exp-role">Java & Frameworks</div>
+                    <div class="exp-year">Ongoing</div>
+                    <div class="exp-desc">Deepening expertise in Java and its ecosystem — exploring frameworks, design
+                        patterns, and backend architecture for building production-grade applications.</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact">
+        <div class="contact-eyebrow">Get in touch</div>
+        <h2 class="contact-title reveal">Let's build something <em>together.</em></h2>
+        <a href="mailto:swastikbasu@example.com" class="contact-email reveal">basuswastik.work@gmail.com</a>
+        <div class="social-links reveal">
+            <a href="https://github.com/swastik-basu" target="_blank" class="social-link">GitHub</a>
+            <a href="https://www.linkedin.com/in/swastik-basu-561a092ab/" target="_blank"
+                class="social-link">LinkedIn</a>
+            <a href="https://marketplace.visualstudio.com/publishers/SwastikBasu626" target="_blank"
+                class="social-link">VS Code Marketplace</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-copy">© 2025 Swastik Basu. All rights reserved.</div>
+        <div class="footer-status">
+            <div class="status-dot"></div>
+            Available for opportunities
+        </div>
+    </footer>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        const ring = document.getElementById('cursor-ring');
+        let rx = 0, ry = 0, mx = 0, my = 0;
+
+        if (window.matchMedia('(pointer: fine)').matches) {
+            document.addEventListener('mousemove', e => {
+                mx = e.clientX; my = e.clientY;
+                cursor.style.left = mx - 4 + 'px';
+                cursor.style.top = my - 4 + 'px';
+            });
+            (function animate() {
+                rx += (mx - rx) * 0.12;
+                ry += (my - ry) * 0.12;
+                ring.style.left = rx - 18 + 'px';
+                ring.style.top = ry - 18 + 'px';
+                requestAnimationFrame(animate);
+            })();
+        }
+
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            mobileMenu.classList.toggle('open');
+        });
+        function closeMobile() {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    const bar = entry.target.querySelector('.skill-bar-fill');
+                    if (bar) {
+                        setTimeout(() => {
+                            bar.style.transform = `scaleX(${bar.dataset.width / 100})`;
+                        }, 200);
+                    }
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.querySelector(a.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+                closeMobile();
+            });
+        });
+    </script>
+</body>
+
+</html>
